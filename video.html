@@ -85,11 +85,14 @@
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
             !window.MSStream;
 
-            alert(isIOS);
         var video = document.querySelector("video.tvc-media");
-        video.addEventListener('timeupdate', (e) => {
+
+        if(! isIOS) {
+
+            video.addEventListener('timeupdate', (e) => {
                 video.muted = false;
             })
+        }
     </script>
 </body>
 </html>
