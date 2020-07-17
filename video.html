@@ -64,7 +64,7 @@
             <li>playsinline</li>
             <li>muted</li>
         </ul>
-        <video height="150px" autoplay playsinline controls controlsList="nodownload nofullscreen" class="tvc-media">
+        <video height="150px" autoplay playsinline controls muted controlsList="nodownload nofullscreen noremoteplayback" class="tvc-media">
             <source src="asset/kuching_pacaran.mp4" type="video/mp4">
         </video>
     </div>
@@ -80,11 +80,11 @@
         </video>
     </div> -->
 
-    <!-- <script>
+    <script>
         var video = document.querySelector("video.tvc-media");
         video.addEventListener('timeupdate', (e) => {
                 video.muted = false;
             })
-    </script> -->
+    </script>
 </body>
 </html>
