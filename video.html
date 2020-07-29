@@ -4,69 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Only Test</title>
+    <style>
+        .p-rel {
+        position: relative;
+        width: fit-content;
+    }
+    .player {
+        position: absolute;
+        width: 100%;
+        height: 30px;
+        bottom: 3%;
+    }
+
+    .player img {
+        width: 16px;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        right: 5%;
+        transform: translateY(-50%);
+    }
+    </style>
+
 </head>
 <body>
-    <!-- <div>
-        <h2>Video 1</h2>
-        <ul>
-            <li>autoplay</li>
-        </ul>
-        <video height="150px" autoplay>
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
-    </div>
     <div>
         <h2>Video 1</h2>
         <ul>
             <li>autoplay</li>
-            <li>muted</li>
-        </ul>
-        <video height="150px" autoplay muted>
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
-    </div>
-    <div>
-        <h2>Video 1</h2>
-        <ul>
-            <li>autoplay</li>
-            <li>playsinline</li>
-        </ul>
-        <video height="150px" autoplay playsinline>
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
-    </div>
-    <div>
-        <h2>Video 1</h2>
-        <ul>
-            <li>autoplay</li>
-            <li>control</li>
-        </ul>
-        <video height="150px" autoplay controls>
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
-    </div>
-    <div>
-        <h2>Video 1</h2>
-        <ul>
-            <li>autoplay</li>
-            <li>control</li>
-            <li>playsinline</li>
-        </ul>
-        <video height="150px" autoplay playsinline controls>
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
-    </div> -->
-    <div>
-        <h2>Video 1</h2>
-        <ul>
-            <li>autoplay</li>
-            <li>control</li>
             <li>playsinline</li>
             <li>muted</li>
         </ul>
-        <video height="150px" autoplay playsinline controls muted controlsList="nodownload nofullscreen noremoteplayback" class="tvc-media">
-            <source src="asset/kuching_pacaran.mp4" type="video/mp4">
-        </video>
+        <div class="p-rel">
+            <video height="150px" autoplay playsinline controls muted controlsList="nodownload nofullscreen noremoteplayback"  class="tvc-media">
+                <source src="asset/kuching_pacaran.mp4" type="video/mp4">
+            </video>
+            <canvas id="video-canvas" height="200px" width="200px"></canvas>
+            <div class="player">
+                <img src="volume-disable.png" data-volume="false" data-volume-up="volume-up.png" data-volume-disable="volume-disable.png" alt="">
+            </div>
+        </div>
     </div>
     <!-- <div>
         <h2>Video 1</h2>
@@ -79,20 +56,54 @@
             <source src="asset/kuching_pacaran.mp4" type="video/mp4">
         </video>
     </div> -->
-
+    <script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+    <script src="canvas-video-player.js"></script>
     <script>
         let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
             !window.MSStream;
 
         var video = document.querySelector("video.tvc-media");
+        var volume = $(".player img[data-volume]");
+        var firstRun = false;
+        video.addEventListener('timeupdate', (e) => {
+            var duration = Math.floor(video.duration);
+            var time = duration - Math.floor(video.currentTime);
 
-        if(! isIOS) {
-
-            video.addEventListener('timeupdate', (e) => {
+            if( ! isIOS && !firstRun) {
                 video.muted = false;
-            })
-        }
+                volume.data('volume', true);
+                volume.attr('src', volume.data('volume-up'));
+                firstRun = true;
+            }
+        })
+
+        volume.click(function(e) {
+            video.muted = false;
+            if(volume.data('volume')) {
+                video.volume = 0;
+                volume.data('volume', false);
+                volume.attr('src', volume.data('volume-disable'));
+            } else {
+                console.log('volume up');
+                video.volume = 1;
+                volume.data('volume', true);
+                volume.attr('src', volume.data('volume-up'));
+            }
+        })
+        var canvasVideo = new CanvasVideoPlayer({
+            videoSelector: 'video',
+            canvasSelector: 'canvas',
+            timelineSelector: false,
+            autoplay: true,
+            makeLoop: true,
+            pauseOnClick: false,
+            audio: false
+        });
+
     </script>
 </body>
 </html>
