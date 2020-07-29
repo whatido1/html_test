@@ -69,6 +69,8 @@
         var video = document.querySelector("video.tvc-media");
         var volume = $(".player img[data-volume]");
         var firstRun = false;
+        var audio;
+        var canvasVideo;
         video.addEventListener('timeupdate', (e) => {
             var duration = Math.floor(video.duration);
             var time = duration - Math.floor(video.currentTime);
@@ -80,33 +82,47 @@
                 firstRun = true;
             }
         })
-
+        isIOS = true;
         volume.click(function(e) {
-            video.muted = false;
+            if(! isIOS) {
+                video.muted = false;
+            }
             if(volume.data('volume')) {
-                console.log('volume down');
-                console.log(video.volume);
-                video.volume = 0;
-                console.log(video.volume);
+                if(isIOS) {
+                    audio.volume = 0;
+                    console.log('audio 0');
+                } else {
+                    video.volume = 0;
+                }
                 volume.data('volume', false);
                 volume.attr('src', volume.data('volume-disable'));
             } else {
-                console.log('volume up');
-                video.volume = 1;
+                if(isIOS) {
+                    audio.volume = 1;
+                    console.log('audio 1');
+                } else {
+                    video.volume = 1;
+                }
                 volume.data('volume', true);
                 volume.attr('src', volume.data('volume-up'));
             }
         })
-        isIOS = true;
+
+
         if(isIOS) {
-            var canvasVideo = new CanvasVideoPlayer({
+            //audio
+            audio = document.createElement('audio');
+            audio.innerHTML = this.video.innerHTML;
+            video.parentNode.insertBefore(audio, video);
+            audio.play();
+            canvasVideo = new CanvasVideoPlayer({
                 videoSelector: 'video',
                 canvasSelector: 'canvas',
                 timelineSelector: false,
                 autoplay: true,
                 makeLoop: false,
                 pauseOnClick: false,
-                audio: true
+                audio: false
             });
 
             volume.data('volume', true);
